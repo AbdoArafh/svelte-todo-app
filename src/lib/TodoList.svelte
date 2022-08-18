@@ -1,6 +1,6 @@
 <script lang="ts">
   // animations
-  import { crossfade, fly } from "svelte/transition";
+  import { crossfade, fly, slide } from "svelte/transition";
   import { quintOut } from "svelte/easing";
   import { flip } from "svelte/animate";
 
@@ -42,24 +42,26 @@
 </script>
 
 {#if list.length}
-  <h2 transition:fly={{ x: 100 }}>{isDoneList ? "Done" : "Todo"}</h2>
-  <ul class="todos" class:done={isDoneList}>
-    {#each list as todo (todo.id)}
-      <li
-        class="item"
-        in:receive={{ key: todo.id }}
-        out:send={{ key: todo.id }}
-        animate:flip
-      >
-        <label>
-          <input
-            type="checkbox"
-            on:input={() => handleChecked(todo)}
-            checked={isDoneList}
-          />
-          <span class="text">{todo.text}</span>
-        </label>
-      </li>
-    {/each}
-  </ul>
+  <div out:slide>
+    <h2 transition:fly={{ x: 100 }}>{isDoneList ? "Done" : "Todo"}</h2>
+    <ul class="todos" class:done={isDoneList}>
+      {#each list as todo (todo.id)}
+        <li
+          class="item"
+          in:receive={{ key: todo.id }}
+          out:send={{ key: todo.id }}
+          animate:flip
+        >
+          <label>
+            <input
+              type="checkbox"
+              on:input={() => handleChecked(todo)}
+              checked={isDoneList}
+            />
+            <span class="text">{todo.text}</span>
+          </label>
+        </li>
+      {/each}
+    </ul>
+  </div>
 {/if}
