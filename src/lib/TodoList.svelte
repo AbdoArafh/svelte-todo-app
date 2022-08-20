@@ -1,8 +1,8 @@
 <script lang="ts">
   // animations
-  import { crossfade, fly, slide } from "svelte/transition";
-  import { quintOut } from "svelte/easing";
+  import { fly, slide } from "svelte/transition";
   import { flip } from "svelte/animate";
+  import type { CrossfadeParams, TransitionConfig } from "svelte/transition";
 
   // functions
   import { createEventDispatcher } from "svelte";
@@ -17,23 +17,13 @@
 
   const dispatch = createEventDispatcher();
 
-  const [send, receive] = crossfade({
-    duration: (d) => Math.sqrt(d * 200),
+  type fallback = (
+    node: Element,
+    params: CrossfadeParams & { key: any }
+  ) => () => TransitionConfig;
 
-    fallback(node, _params) {
-      const style = getComputedStyle(node);
-      const transform = style.transform === "none" ? "" : style.transform;
-
-      return {
-        duration: 600,
-        easing: quintOut,
-        css: (t) => `
-        transform: ${transform} scale(${t});
-        opacity: ${t}
-      `,
-      };
-    },
-  });
+  export let send: fallback;
+  export let receive: fallback;
 
   function handleChecked(todo: Todo) {
     todo.done = !isDoneList;
